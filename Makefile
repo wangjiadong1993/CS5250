@@ -1,5 +1,6 @@
 obj-m += task1.o
 obj-m += task1-d.o
+obj-m += task2.o
 all:
 	make -C  /lib/modules/$(shell uname -r)/build M=$(PWD) modules
 clean:
