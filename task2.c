@@ -51,21 +51,16 @@ ssize_t onebyte_read(struct file *filep, char *buf, size_t count, loff_t *f_pos)
 
 ssize_t onebyte_write(struct file *filep, const char *buf, size_t count, loff_t *f_pos){
 	/*please complete the function on your own*/
-	if(count <= 0){
-		//if the msg size is 0, just ignore
-		return 0;
+
+        ssize_t t = simple_write_to_buffer(onebyte_data, 1, f_pos, buf, count);
+	if(count > 1){
+		return -ENOSPC;
 	}else{
-		//read the data from buffer
-		char *temp_pointer;
-	        temp_pointer = buf;	
+		return t;
 		//copy_from_user(onebyte_data, temp_pointer, 1);
-                get_user(*onebyte_data, buf);
+                //get_user(*onebyte_data, buf);
 		//if size larger than 1
 		//throw error
-		if(count > 1){
-			printk(KERN_ALERT "No space left on device\n");
-		}
-		return 0;
 	}
 }
 
