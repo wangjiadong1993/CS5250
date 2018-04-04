@@ -1,0 +1,1 @@
+cmd_/home/wangjiadong/Downloads/assignment3/task1-d.ko := ld -r -m elf_x86_64 -T ./scripts/module-common.lds --build-id  -o /home/wangjiadong/Downloads/assignment3/task1-d.ko /home/wangjiadong/Downloads/assignment3/task1-d.o /home/wangjiadong/Downloads/assignment3/task1-d.mod.o ;  true
