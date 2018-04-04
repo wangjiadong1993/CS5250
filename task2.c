@@ -37,27 +37,31 @@ int onebyte_release(struct inode *inode, struct file *filep){
 ssize_t onebyte_read(struct file *filep, char *buf, size_t count, loff_t *f_pos){
 	/*please complete the function on your own*/
 	//send the msg to user space.
-	copy_to_user(buf, onebyte_data, 1);
-	printk(KERN_INFO "%c\n", onebyte_data[0]);
+	//printk(KERN_INFO "%c\n", onebyte_data[0]);
 	//return 0, assume the operation is successful.
-	return 0;
+	put_user(*onebyte_data, buf);
+	return 1;
 }
 
 ssize_t onebyte_write(struct file *filep, const char *buf, size_t count, loff_t *f_pos){
 	/*please complete the function on your own*/
 	if(count <= 0){
 		//if the msg size is 0, just ignore
-		return 0;
+		return 1;
 	}else{
 		//read the data from buffer
-		*onebyte_data = buf[0];
+		char *temp_pointer;
+	        temp_pointer = buf;	
+		//copy_from_user(onebyte_data, temp_pointer, 1);
 		//if size larger than 1
 		//throw error
 		if(count > 1){
 			printk(KERN_ALERT "No space left on device\n");
+			onebyte_exit();
+			return -ENOMEM;
 		}
+		return 0;
 	}
-	return 0;
 }
 
 static int onebyte_init(void){
