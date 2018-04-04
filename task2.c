@@ -25,7 +25,7 @@ read: onebyte_read,
       release: onebyte_release
 };
 
-char *onebyte_data = NULL;
+char *onebyte_data = "x\0";
 
 int onebyte_open(struct inode *inode, struct file *filep){
 	return 0; //always successful
@@ -39,26 +39,31 @@ ssize_t onebyte_read(struct file *filep, char *buf, size_t count, loff_t *f_pos)
 	//send the msg to user space.
 	//printk(KERN_INFO "%c\n", onebyte_data[0]);
 	//return 0, assume the operation is successful.
-	put_user(*onebyte_data, buf);
-	return 1;
+//	put_user(*onebyte_data, buf);
+//	if(*f_pos == 0){
+//	    *f_pos += 1;
+//	    return 1;
+//	}else{
+//	    return 1;
+//	}
+        return  simple_read_from_buffer(buf, 1, f_pos, onebyte_data, 1);
 }
 
 ssize_t onebyte_write(struct file *filep, const char *buf, size_t count, loff_t *f_pos){
 	/*please complete the function on your own*/
 	if(count <= 0){
 		//if the msg size is 0, just ignore
-		return 1;
+		return 0;
 	}else{
 		//read the data from buffer
 		char *temp_pointer;
 	        temp_pointer = buf;	
 		//copy_from_user(onebyte_data, temp_pointer, 1);
+                get_user(*onebyte_data, buf);
 		//if size larger than 1
 		//throw error
 		if(count > 1){
 			printk(KERN_ALERT "No space left on device\n");
-			onebyte_exit();
-			return -ENOMEM;
 		}
 		return 0;
 	}
@@ -83,7 +88,7 @@ static int onebyte_init(void){
 		return -ENOMEM;
 	}
 	//initialize the value to be X
-	*onebyte_data = 'X';
+	onebyte_data[0] = 'x';
 	printk(KERN_ALERT "This is a onebyte device module\n");
 	return 0;
 }
